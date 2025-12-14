@@ -14,8 +14,9 @@ async function bootstrap() {
   //     skipNullProperties: true,
   //   }),
   // );
-  app.useGlobalFilters(new GlobalExceptionFilter());
   app.setGlobalPrefix('api/v1');
+
+  app.useGlobalFilters(new GlobalExceptionFilter());
   await app.listen(process.env.PORT ?? 5050);
 }
 
