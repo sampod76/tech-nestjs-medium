@@ -28,6 +28,7 @@ export const appConfig = () => {
         user: env.DATABASE_USER,
         password: env.DATABASE_PASSWORD,
         mongodbUrl: env.MONGODB_URL,
+        postgresUrl: env.DATABASE_URL,
       },
       jwt: {
         access_secret: env.JWT_SECRET,
