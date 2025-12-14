@@ -1,0 +1,12 @@
+model Post {
+    id        String   @id @default(uuid())
+    title     String
+    category  String
+    content   String
+    author    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@schema("posts")
+    @@map("posts")
+}

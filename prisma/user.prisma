@@ -9,4 +9,5 @@ model User {
     updatedAt DateTime @updatedAt
 
     @@schema("auth")
+    @@map("users")
 }
