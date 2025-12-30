@@ -5,6 +5,9 @@ import { z } from 'zod';
  */
 export const CreatePostSchema = z.object({
   title: z.string(),
+  content: z.string(),
+  category: z.string(),
+  author: z.string(),
 });
 
 /**

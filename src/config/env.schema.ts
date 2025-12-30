@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const EnvSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']),
+  PORT: z.coerce.number().default(5050),
   DATABASE_HOST: z.string(),
   DATABASE_PORT: z.coerce.number(),
   DATABASE_NAME: z.string(),

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import {
@@ -19,41 +20,54 @@ import {
 } from './schemas/update-post.schema';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { PostEntity } from './entities/post.entity';
+import { Roles } from '../auth/roles.decorator';
+import { Role } from '../user/user.types';
+import { AuthGuard } from '../auth/auth.guard';
+import { RolesGuard } from '../auth/roles.guard';
 
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  create(
+  @Roles(Role.admin)
+  @UseGuards(AuthGuard, RolesGuard)
+  async create(
     @Body(new ZodValidationPipe(CreatePostSchema)) createPostDto: CreatePostDto,
   ) {
-    return this.postService.create(createPostDto);
+    const res = await this.postService.create(createPostDto);
+
+    return res;
   }
 
   @Get()
-  findAll(@Query('search') search?: string): PostEntity[] {
+  async findAll(@Query('search') search?: string) {
     const query: Partial<Record<string, string>> = {
       search,
     };
-    return this.postService.findAll(query);
+
+    const res = await this.postService.findAll(query);
+    return res;
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    const res = await this.postService.findOne(id);
+    return res;
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdatePostSchema)) updatePostDto: UpdatePostDto,
   ) {
-    return this.postService.update(+id, updatePostDto);
+    const res = await this.postService.update(id, updatePostDto);
+    return res;
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const res = await this.postService.remove(id);
+    return res;
   }
 }

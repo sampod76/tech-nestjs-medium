@@ -14,10 +14,18 @@ async function bootstrap() {
   //     skipNullProperties: true,
   //   }),
   // );
+  const port = process.env.PORT || 5050;
   app.setGlobalPrefix('api/v1');
 
+  app
+    .listen(port, '0.0.0.0')
+    .then(() =>
+      console.log(`🚀 Server running at http://localhost:${port}/api/v1`),
+    )
+    .catch((error) => {
+      console.log('🚀 ~ bootstrap ~ error:', error);
+    });
   app.useGlobalFilters(new GlobalExceptionFilter());
-  await app.listen(process.env.PORT ?? 5050);
 }
 
 void bootstrap();

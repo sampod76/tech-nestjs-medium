@@ -21,6 +21,7 @@ export const appConfig = () => {
   return {
     app: {
       env: env.NODE_ENV,
+      port: env.PORT,
       database: {
         host: env.DATABASE_HOST,
         port: env.DATABASE_PORT,

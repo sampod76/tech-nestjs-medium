@@ -1,27 +1,49 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './schemas/create-post.schema';
 import { UpdatePostDto } from './schemas/update-post.schema';
-import { PostEntity } from './entities/post.entity';
+import { PostRepository } from './post.repository';
+import { Post, Prisma } from 'src/generated/prisma/client';
 
 @Injectable()
 export class PostService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  constructor(private readonly postRepository: PostRepository) {}
+
+  create(dto: CreatePostDto): Promise<Post> {
+    return this.postRepository.create(dto);
   }
 
-  findAll({ search }: { search?: string }): PostEntity[] {
-    return [] as PostEntity[];
+  findAll(query: Partial<Record<string, string>>): Promise<Post[]> {
+    return this.postRepository.findAll();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async findOne(id: string): Promise<Post> {
+    const post = await this.postRepository.findOne(id);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: string, dto: UpdatePostDto): Promise<Post> {
+    const post = await this.postRepository.findOne(id);
+
+    if (!post) {
+      throw new NotFoundException('Post not found');
+    }
+
+    const data: Prisma.PostUpdateInput = {
+      title: dto.title,
+      content: dto.content,
+      category: dto.category,
+      author: dto.author,
+    };
+
+    return this.postRepository.update(id, data);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  remove(id: string): Promise<Post> {
+    return this.postRepository.remove(id);
   }
 }

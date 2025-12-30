@@ -13,6 +13,7 @@ import { AppConfig, appConfig } from './config/app.config';
 import { PostModule } from './modules/post/post.module';
 
 import { CategoryModule } from './modules/category/category.module';
+import { PrismaModule } from './database/prisma.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { CategoryModule } from './modules/category/category.module';
       process.env.MONGODB_URL ?? 'mongodb://localhost:27017/test',
     ),
 
+    PrismaModule,
     AuthModule,
     UserModule,
     CourseModule,

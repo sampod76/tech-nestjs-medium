@@ -1,21 +1,43 @@
 {
   "compilerOptions": {
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "resolvePackageJsonExports": true,
-    "esModuleInterop": true,
-    "isolatedModules": true,
-    "declaration": true,
+    /* ===============================
+       Module System (IMPORTANT)
+    =============================== */
+    "module": "commonjs",
+    "moduleResolution": "node",
+
+    /* ===============================
+       Target & Output
+    =============================== */
+    "target": "ES2021",
+    "outDir": "./dist",
+    "sourceMap": true,
     "removeComments": true,
+    "declaration": false,
+
+    /* ===============================
+       Decorators (NestJS Core)
+    =============================== */
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+
+    /* ===============================
+       Interop & Imports
+    =============================== */
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES2023",
-    "sourceMap": true,
-    "outDir": "./dist",
+
+    /* ===============================
+       Project Structure
+    =============================== */
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+
+    /* ===============================
+       Type Safety (Balanced)
+    =============================== */
+    "strict": false,
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
