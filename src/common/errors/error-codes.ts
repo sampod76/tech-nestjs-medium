@@ -1,0 +1,17 @@
+export const ErrorCodes = {
+  INTERNAL_ERROR: 'INTERNAL_ERROR',
+  VALIDATION_ERROR: 'VALIDATION_ERROR',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  FORBIDDEN: 'FORBIDDEN',
+  NOT_FOUND: 'NOT_FOUND',
+  CONFLICT: 'CONFLICT',
+  BAD_REQUEST: 'BAD_REQUEST',
+
+  // Prisma specific
+  DB_CONSTRAINT: 'DB_CONSTRAINT',
+  DB_NOT_FOUND: 'DB_NOT_FOUND',
+  DB_FOREIGN_KEY: 'DB_FOREIGN_KEY',
+  DB_INVALID_INPUT: 'DB_INVALID_INPUT',
+} as const;
+
+export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];

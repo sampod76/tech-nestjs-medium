@@ -1,7 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+
 import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
+import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
+import { requestIdMiddleware } from './common/middlewares/request-id.middleware';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -14,9 +17,14 @@ async function bootstrap() {
   //     skipNullProperties: true,
   //   }),
   // );
-  const port = process.env.PORT || 5050;
+  app.use(requestIdMiddleware);
   app.setGlobalPrefix('api/v1');
-
+  app.useGlobalFilters(
+    new PrismaExceptionFilter(),
+    new GlobalExceptionFilter(),
+  );
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  const port = process.env.PORT || 5050;
   app
     .listen(port, '0.0.0.0')
     .then(() =>
@@ -25,7 +33,6 @@ async function bootstrap() {
     .catch((error) => {
       console.log('🚀 ~ bootstrap ~ error:', error);
     });
-  app.useGlobalFilters(new GlobalExceptionFilter());
 }
 
 void bootstrap();

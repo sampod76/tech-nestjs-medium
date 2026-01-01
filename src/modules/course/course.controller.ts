@@ -12,12 +12,18 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
-import { type CreateCourseDto } from './schemas/create-course.schema';
+import {
+  UpdateCourseSchema,
+  type CreateCourseDto,
+} from './schemas/create-course.schema';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
 import { Roles } from 'src/modules/auth/roles.decorator';
 import { Role } from 'src/modules/user/user.types';
 import { RolesGuard } from 'src/modules/auth/roles.guard';
 import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import { ApiListData } from 'src/common/http/http-response';
+import { Course } from './mongoose/course.schema';
 
 @Controller('courses')
 export class CourseController {
@@ -27,15 +33,27 @@ export class CourseController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createCourseDto: CreateCourseDto) {
-    const result = await this.courseService.create(createCourseDto);
-    return result;
+    const course = await this.courseService.create(createCourseDto);
+    return course;
   }
+
   @Get()
   @Roles(Role.admin, Role.teacher, Role.student)
   @UseGuards(AuthGuard)
   @UseInterceptors(LoggingInterceptor)
-  async findAll() {
-    return await this.courseService.findAll();
+  async findAll(): Promise<ApiListData<Course>> {
+    const courses = await this.courseService.findAll();
+    return {
+      items: courses,
+      meta: {
+        total: courses.length,
+        page: 1,
+        limit: 20,
+        totalPages: 1,
+        hasNext: false,
+        hasPrev: false,
+      },
+    };
   }
   @Get(':id')
   @Roles(Role.admin, Role.teacher, Role.student)
@@ -48,14 +66,16 @@ export class CourseController {
   @Roles(Role.admin)
   async update(
     @Param('id') id: string,
-    @Body() updateCourseDto: CreateCourseDto,
+    @Body(new ZodValidationPipe(UpdateCourseSchema))
+    updateCourseDto: Partial<CreateCourseDto>,
   ) {
     return await this.courseService.update(id, updateCourseDto);
   }
   @Delete(':id')
   @Roles(Role.admin)
   @UseGuards(AuthGuard)
-  async remove(@Param('id') id: string) {
-    return await this.courseService.delete(id);
+  @HttpCode(HttpStatus.NO_CONTENT) // 204 when delete success then not return any response data jast return 204
+  remove(@Param('id') id: string) {
+    return this.courseService.delete(id);
   }
 }

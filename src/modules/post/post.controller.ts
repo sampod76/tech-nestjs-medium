@@ -8,6 +8,9 @@ import {
   Delete,
   Query,
   UseGuards,
+  HttpCode,
+  HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import {
@@ -24,14 +27,22 @@ import { Roles } from '../auth/roles.decorator';
 import { Role } from '../user/user.types';
 import { AuthGuard } from '../auth/auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
+import { OffsetPaginationSchema } from 'src/common/pagination/pagination.schema';
+import { OffsetPagination } from 'src/common/pagination/pagination.types';
+import {
+  PostQueryFilter,
+  PostQueryFilterSchema,
+} from './schemas/query-filter.schema';
+import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
 
-@Controller('post')
+@Controller('posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
   @Roles(Role.admin)
   @UseGuards(AuthGuard, RolesGuard)
+  @UseInterceptors(LoggingInterceptor)
   async create(
     @Body(new ZodValidationPipe(CreatePostSchema)) createPostDto: CreatePostDto,
   ) {
@@ -41,22 +52,28 @@ export class PostController {
   }
 
   @Get()
-  async findAll(@Query('search') search?: string) {
-    const query: Partial<Record<string, string>> = {
-      search,
-    };
-
+  @Roles(Role.admin, Role.teacher, Role.student)
+  @UseGuards(AuthGuard, RolesGuard)
+  @UseInterceptors(LoggingInterceptor)
+  async findAll(
+    @Query(new ZodValidationPipe(PostQueryFilterSchema))
+    query: PostQueryFilter,
+  ) {
     const res = await this.postService.findAll(query);
     return res;
   }
 
   @Get(':id')
+  @Roles(Role.admin, Role.teacher, Role.student)
+  @UseGuards(AuthGuard, RolesGuard)
   async findOne(@Param('id') id: string) {
     const res = await this.postService.findOne(id);
     return res;
   }
 
   @Patch(':id')
+  @Roles(Role.admin, Role.teacher, Role.student)
+  @UseGuards(AuthGuard, RolesGuard)
   async update(
     @Param('id') id: string,
     @Body(new ZodValidationPipe(UpdatePostSchema)) updatePostDto: UpdatePostDto,
@@ -66,8 +83,11 @@ export class PostController {
   }
 
   @Delete(':id')
+  @Roles(Role.admin, Role.teacher, Role.student)
+  @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     const res = await this.postService.remove(id);
-    return res;
+    return null;
   }
 }

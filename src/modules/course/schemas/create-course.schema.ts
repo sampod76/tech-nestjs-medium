@@ -1,17 +1,15 @@
 import { z } from 'zod';
 
-/**
- * Validation Schema (Create Course)
- */
-export const CreateCourseSchema = z
-  .object({
-    title: z.string().min(1, 'Title is required'),
-    description: z.string().min(1, 'Description is required'),
-    price: z.coerce.number().min(0, 'Price must be a positive number'),
-  })
-  .strict();
+export const CourseBaseSchema = z.object({
+  title: z.string().min(3),
+  description: z.string().optional(),
+  price: z.number().positive(),
+  isPublished: z.boolean().optional(),
+});
 
-/**
- * Request DTO (inferred from schema)
- */
+export const CreateCourseSchema = CourseBaseSchema;
+
+export const UpdateCourseSchema = CourseBaseSchema.partial();
+
 export type CreateCourseDto = z.infer<typeof CreateCourseSchema>;
+export type UpdateCourseDto = z.infer<typeof UpdateCourseSchema>;

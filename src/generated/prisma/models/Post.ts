@@ -32,6 +32,7 @@ export type PostMinAggregateOutputType = {
   author: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type PostMaxAggregateOutputType = {
@@ -42,6 +43,7 @@ export type PostMaxAggregateOutputType = {
   author: string | null
   createdAt: Date | null
   updatedAt: Date | null
+  deletedAt: Date | null
 }
 
 export type PostCountAggregateOutputType = {
@@ -52,6 +54,7 @@ export type PostCountAggregateOutputType = {
   author: number
   createdAt: number
   updatedAt: number
+  deletedAt: number
   _all: number
 }
 
@@ -64,6 +67,7 @@ export type PostMinAggregateInputType = {
   author?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type PostMaxAggregateInputType = {
@@ -74,6 +78,7 @@ export type PostMaxAggregateInputType = {
   author?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
 }
 
 export type PostCountAggregateInputType = {
@@ -84,6 +89,7 @@ export type PostCountAggregateInputType = {
   author?: true
   createdAt?: true
   updatedAt?: true
+  deletedAt?: true
   _all?: true
 }
 
@@ -167,6 +173,7 @@ export type PostGroupByOutputType = {
   author: string
   createdAt: Date
   updatedAt: Date
+  deletedAt: Date | null
   _count: PostCountAggregateOutputType | null
   _min: PostMinAggregateOutputType | null
   _max: PostMaxAggregateOutputType | null
@@ -198,6 +205,7 @@ export type PostWhereInput = {
   author?: Prisma.StringFilter<"Post"> | string
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
 }
 
 export type PostOrderByWithRelationInput = {
@@ -208,6 +216,7 @@ export type PostOrderByWithRelationInput = {
   author?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
 }
 
 export type PostWhereUniqueInput = Prisma.AtLeast<{
@@ -221,6 +230,7 @@ export type PostWhereUniqueInput = Prisma.AtLeast<{
   author?: Prisma.StringFilter<"Post"> | string
   createdAt?: Prisma.DateTimeFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"Post"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableFilter<"Post"> | Date | string | null
 }, "id">
 
 export type PostOrderByWithAggregationInput = {
@@ -231,6 +241,7 @@ export type PostOrderByWithAggregationInput = {
   author?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.PostCountOrderByAggregateInput
   _max?: Prisma.PostMaxOrderByAggregateInput
   _min?: Prisma.PostMinOrderByAggregateInput
@@ -247,6 +258,7 @@ export type PostScalarWhereWithAggregatesInput = {
   author?: Prisma.StringWithAggregatesFilter<"Post"> | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"Post"> | Date | string
+  deletedAt?: Prisma.DateTimeNullableWithAggregatesFilter<"Post"> | Date | string | null
 }
 
 export type PostCreateInput = {
@@ -257,6 +269,7 @@ export type PostCreateInput = {
   author: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type PostUncheckedCreateInput = {
@@ -267,6 +280,7 @@ export type PostUncheckedCreateInput = {
   author: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type PostUpdateInput = {
@@ -277,6 +291,7 @@ export type PostUpdateInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PostUncheckedUpdateInput = {
@@ -287,6 +302,7 @@ export type PostUncheckedUpdateInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PostCreateManyInput = {
@@ -297,6 +313,7 @@ export type PostCreateManyInput = {
   author: string
   createdAt?: Date | string
   updatedAt?: Date | string
+  deletedAt?: Date | string | null
 }
 
 export type PostUpdateManyMutationInput = {
@@ -307,6 +324,7 @@ export type PostUpdateManyMutationInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PostUncheckedUpdateManyInput = {
@@ -317,6 +335,7 @@ export type PostUncheckedUpdateManyInput = {
   author?: Prisma.StringFieldUpdateOperationsInput | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  deletedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type PostCountOrderByAggregateInput = {
@@ -327,6 +346,7 @@ export type PostCountOrderByAggregateInput = {
   author?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type PostMaxOrderByAggregateInput = {
@@ -337,6 +357,7 @@ export type PostMaxOrderByAggregateInput = {
   author?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type PostMinOrderByAggregateInput = {
@@ -347,6 +368,7 @@ export type PostMinOrderByAggregateInput = {
   author?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+  deletedAt?: Prisma.SortOrder
 }
 
 export type StringFieldUpdateOperationsInput = {
@@ -355,6 +377,10 @@ export type StringFieldUpdateOperationsInput = {
 
 export type DateTimeFieldUpdateOperationsInput = {
   set?: Date | string
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 
@@ -367,6 +393,7 @@ export type PostSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   author?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -377,6 +404,7 @@ export type PostSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   author?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -387,6 +415,7 @@ export type PostSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   author?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }, ExtArgs["result"]["post"]>
 
 export type PostSelectScalar = {
@@ -397,9 +426,10 @@ export type PostSelectScalar = {
   author?: boolean
   createdAt?: boolean
   updatedAt?: boolean
+  deletedAt?: boolean
 }
 
-export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "content" | "author" | "createdAt" | "updatedAt", ExtArgs["result"]["post"]>
+export type PostOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "title" | "category" | "content" | "author" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["post"]>
 
 export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Post"
@@ -412,6 +442,7 @@ export type $PostPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     author: string
     createdAt: Date
     updatedAt: Date
+    deletedAt: Date | null
   }, ExtArgs["result"]["post"]>
   composites: {}
 }
@@ -842,6 +873,7 @@ export interface PostFieldRefs {
   readonly author: Prisma.FieldRef<"Post", 'String'>
   readonly createdAt: Prisma.FieldRef<"Post", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"Post", 'DateTime'>
+  readonly deletedAt: Prisma.FieldRef<"Post", 'DateTime'>
 }
     
 

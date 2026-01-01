@@ -3,6 +3,8 @@ import { CreatePostDto } from './schemas/create-post.schema';
 import { UpdatePostDto } from './schemas/update-post.schema';
 import { PostRepository } from './post.repository';
 import { Post, Prisma } from 'src/generated/prisma/client';
+import { PostQueryFilter } from './schemas/query-filter.schema';
+import { ApiListData } from 'src/common/http/http-response';
 
 @Injectable()
 export class PostService {
@@ -12,8 +14,8 @@ export class PostService {
     return this.postRepository.create(dto);
   }
 
-  findAll(query: Partial<Record<string, string>>): Promise<Post[]> {
-    return this.postRepository.findAll();
+  findAll(query: PostQueryFilter): Promise<ApiListData<Post>> {
+    return this.postRepository.findAll(query);
   }
 
   async findOne(id: string): Promise<Post> {
