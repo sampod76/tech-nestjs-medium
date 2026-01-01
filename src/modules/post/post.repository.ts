@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 
 import { CreatePostDto } from './schemas/create-post.schema';
@@ -66,14 +66,28 @@ export class PostRepository {
     });
   }
 
-  update(id: string, data: any) {
+  async update(id: string, data: any) {
+    const postExistCheck = await this.prisma.client.post.findUnique({
+      where: { id },
+    });
+
+    if (!postExistCheck) {
+      throw new NotFoundException('Post not found');
+    }
     return this.prisma.client.post.update({
       where: { id },
       data,
     });
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    const postExistCheck = await this.prisma.client.post.findUnique({
+      where: { id },
+    });
+
+    if (!postExistCheck) {
+      throw new NotFoundException('Post not found');
+    }
     return this.prisma.client.post.update({
       where: { id },
       data: { deletedAt: new Date() },

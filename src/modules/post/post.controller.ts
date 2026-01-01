@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   UseInterceptors,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import {
@@ -43,6 +44,7 @@ export class PostController {
   @Roles(Role.admin)
   @UseGuards(AuthGuard, RolesGuard)
   @UseInterceptors(LoggingInterceptor)
+  @HttpCode(HttpStatus.CREATED)
   async create(
     @Body(new ZodValidationPipe(CreatePostSchema)) createPostDto: CreatePostDto,
   ) {
@@ -60,13 +62,14 @@ export class PostController {
     query: PostQueryFilter,
   ) {
     const res = await this.postService.findAll(query);
+
     return res;
   }
 
   @Get(':id')
   @Roles(Role.admin, Role.teacher, Role.student)
   @UseGuards(AuthGuard, RolesGuard)
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const res = await this.postService.findOne(id);
     return res;
   }
@@ -75,7 +78,7 @@ export class PostController {
   @Roles(Role.admin, Role.teacher, Role.student)
   @UseGuards(AuthGuard, RolesGuard)
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body(new ZodValidationPipe(UpdatePostSchema)) updatePostDto: UpdatePostDto,
   ) {
     const res = await this.postService.update(id, updatePostDto);
@@ -86,7 +89,7 @@ export class PostController {
   @Roles(Role.admin, Role.teacher, Role.student)
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id', ParseUUIDPipe) id: string) {
     const res = await this.postService.remove(id);
     return null;
   }

@@ -1,23 +1,27 @@
 import { PrismaPg } from '@prisma/adapter-pg';
-
 import { PrismaClient } from 'src/generated/prisma/client';
 import { softDeleteExtension } from './extensions/soft-delete.extension';
 
-export type ExtendedPrismaClient = ReturnType<PrismaClient['$extends']>;
+export type ExtendedPrismaClient = PrismaClient &
+  ReturnType<PrismaClient['$extends']>;
 
 export class PrismaClientSingleton {
-  private static instance: ExtendedPrismaClient;
+  private static instance: ExtendedPrismaClient | null = null;
 
   static getInstance(connectionString: string): ExtendedPrismaClient {
-    if (!PrismaClientSingleton.instance) {
+    if (!this.instance) {
       const adapter = new PrismaPg({ connectionString });
 
-      PrismaClientSingleton.instance = new PrismaClient({
+      const prisma = new PrismaClient({
         adapter,
         log: [{ emit: 'event', level: 'error' }],
-      }).$extends(softDeleteExtension);
+      });
+
+      this.instance = prisma.$extends(
+        softDeleteExtension,
+      ) as ExtendedPrismaClient;
     }
 
-    return PrismaClientSingleton.instance;
+    return this.instance;
   }
 }

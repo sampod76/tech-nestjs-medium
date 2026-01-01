@@ -62,14 +62,21 @@ export class LoggingInterceptor implements NestInterceptor {
         //   duration: `${duration}ms`,
         //   data: data, // Controller থেকে আসা raw data
         // };
+
         return data;
       }),
       tap((newData) => {
+        // Controller method execution শেষ হয়েছে
         const endTime = Date.now();
         const duration = endTime - startTime;
+
         console.log('⬅️ After Controller - Response going out');
         console.log(`⏱ Execution Time: ${duration}ms`);
-        console.log('📌 Step 3: tap() → After map(), data is now:', newData);
+        // ✅ HTTP Response object access
+        const response = context.switchToHttp().getResponse();
+
+        // ✅ Add response time as HEADER (safe for production)
+        response.setHeader('x-response-time', `${duration}ms`);
       }),
     );
   }
