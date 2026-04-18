@@ -1,4 +1,11 @@
 {
   "extends": "./tsconfig.json",
-  "include": ["src/**/*.ts", "prisma/**/*.ts", "eslint.config.mjs"]
+  "include": [
+    "src/**/*.ts",
+    "prisma/**/*.ts",
+    "prisma.config.ts", // ✅ ADD THIS
+    "eslint.config.mjs",
+    "test/**/*.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
 }

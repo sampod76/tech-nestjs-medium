@@ -15,6 +15,7 @@ import { PostModule } from './modules/post/post.module';
 import { CategoryModule } from './modules/category/category.module';
 import { PrismaModule } from './database/prisma.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot<AppConfig>({
@@ -40,7 +41,8 @@ import { PrismaModule } from './database/prisma.module';
     UserModule,
     CourseModule,
     PostModule,
-    CategoryModule,
+    CategoryModule
+  
   ],
   controllers: [AppController],
   providers: [AppService],

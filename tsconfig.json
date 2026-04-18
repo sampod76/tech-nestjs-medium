@@ -33,6 +33,7 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+    "ignoreDeprecations": "6.0",
 
     /* ===============================
        Type Safety (Balanced)
@@ -42,6 +43,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "types": ["node", "jest"]
   }
 }
