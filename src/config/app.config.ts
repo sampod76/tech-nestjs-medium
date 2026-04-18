@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 // src/config/app.config.ts
-import { ConfigService } from '@nestjs/config';
 import { EnvSchema } from './env.schema';
 
 export const appConfig = () => {

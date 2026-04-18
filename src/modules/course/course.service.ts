@@ -15,7 +15,7 @@ export class CourseService {
     private configService: ConfigService<AppConfig>,
   ) {}
   async create(courseDto: CreateCourseDto) {
-    const appName = this.configService.get('app', { infer: true });
+    this.configService.get('app', { infer: true });
 
     const result = await this.courseModel.create(courseDto);
     return result;
@@ -58,7 +58,7 @@ export class CourseService {
         { courseId: id },
       );
     }
-    const result = await this.courseModel.findByIdAndDelete(id).exec();
+    await this.courseModel.findByIdAndDelete(id).exec();
     return null;
   }
 }

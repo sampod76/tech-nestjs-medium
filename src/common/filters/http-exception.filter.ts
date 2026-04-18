@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   ArgumentsHost,
   Catch,
@@ -9,7 +8,18 @@ import {
 } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { Prisma } from 'src/generated/prisma/client';
-import { ErrorCodes } from '../errors/error-codes';
+import { ErrorCodes, type ErrorCode } from '../errors/error-codes';
+import type { AuthenticatedRequest } from 'src/modules/auth/auth.types';
+
+type HttpExceptionPayload = {
+  code?: ErrorCode;
+  message?: string;
+  details?: unknown;
+};
+
+type ErrorWithStack = {
+  stack?: string;
+};
 
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -23,12 +33,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
 
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
-    const req = ctx.getRequest<Request>();
+    const req = ctx.getRequest<Request & AuthenticatedRequest>();
 
-    const requestId = (req as any).requestId as string | undefined;
+    const requestId = req.requestId;
 
-    let status = HttpStatus.INTERNAL_SERVER_ERROR;
-    let code: string = ErrorCodes.INTERNAL_ERROR;
+    let status: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    let code: ErrorCode = ErrorCodes.INTERNAL_ERROR;
     let message = 'Internal server error';
     let details: unknown = undefined;
 
@@ -39,7 +49,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       if (typeof payload === 'string') {
         message = payload;
       } else if (payload && typeof payload === 'object') {
-        const p = payload as any;
+        const p = payload as HttpExceptionPayload;
         code = p.code ?? this.mapHttpStatusToCode(status);
         message = p.message ?? message;
         details = p.details;
@@ -49,7 +59,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     }
 
     // Enterprise logging (safe)
-    const err = exception as any;
+    const err = exception as ErrorWithStack;
     this.logger.error(
       {
         requestId,
@@ -76,7 +86,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     });
   }
 
-  private mapHttpStatusToCode(status: number) {
+  private mapHttpStatusToCode(status: HttpStatus): ErrorCode {
     switch (status) {
       case HttpStatus.BAD_REQUEST:
         return ErrorCodes.BAD_REQUEST;

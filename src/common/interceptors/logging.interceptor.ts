@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Injectable,
   NestInterceptor,
@@ -7,19 +6,22 @@ import {
 } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import type { Response } from 'express';
+import type { AuthenticatedRequest } from 'src/modules/auth/auth.types';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
   // Interceptor এর main method → প্রতিটি request এ চালায়
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  intercept(
+    context: ExecutionContext,
+    next: CallHandler<unknown>,
+  ): Observable<unknown> {
     // ==========================================
     // ⭐ 1) BEFORE CONTROLLER — Request পাওয়ার সাথে সাথে
     // ==========================================
 
     // HTTP Request object access
-    const request = context
-      .switchToHttp()
-      .getRequest<Request & { requestStart: number }>();
+    const request = context.switchToHttp().getRequest<AuthenticatedRequest>();
 
     // Timer start: controller execute হতে কত সময় লাগে
     const startTime = Date.now();
@@ -65,7 +67,7 @@ export class LoggingInterceptor implements NestInterceptor {
 
         return data;
       }),
-      tap((newData) => {
+      tap(() => {
         // Controller method execution শেষ হয়েছে
         const endTime = Date.now();
         const duration = endTime - startTime;
@@ -73,7 +75,7 @@ export class LoggingInterceptor implements NestInterceptor {
         console.log('⬅️ After Controller - Response going out');
         console.log(`⏱ Execution Time: ${duration}ms`);
         // ✅ HTTP Response object access
-        const response = context.switchToHttp().getResponse();
+        const response = context.switchToHttp().getResponse<Response>();
 
         // ✅ Add response time as HEADER (safe for production)
         response.setHeader('x-response-time', `${duration}ms`);

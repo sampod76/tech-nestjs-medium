@@ -2,12 +2,15 @@ import { defineConfig } from 'eslint/config';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import globals from 'globals';
-import prettier from 'eslint-plugin-prettier/recommended';
+import prettier from 'eslint-config-prettier';
 
 export default defineConfig([
   {
     ignores: [
-      'dist',
+      'node_modules/**',
+      'dist/**',
+      'coverage/**',
+      'src/generated/**',
       'eslint.config.mjs',
       'jest.config.js',
       'prisma.config.ts',
@@ -16,9 +19,9 @@ export default defineConfig([
 
   js.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  prettier,
 
   {
+    files: ['src/**/*.ts', 'test/**/*.ts', 'prisma/**/*.ts'],
     languageOptions: {
       globals: {
         ...globals.node,
@@ -29,19 +32,22 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  },
-
-  {
     rules: {
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
-      // '@typescript-eslint/no-unsafe-argument': 'warn',
-      // '@typescript-eslint/no-unsafe-member-access': 'warn',
-      '@typescript-eslint/no-unsafe-assignment': 'off', // ✅ OFF
-      '@typescript-eslint/no-unsafe-member-access': 'off', // ✅ OFF
-      '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-floating-promises': 'error',
-
-      'prettier/prettier': ['error', { endOfLine: 'auto' }],
+      '@typescript-eslint/no-unused-vars': [
+        'warn',
+        {
+          argsIgnorePattern: '^_',
+          caughtErrorsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
+        },
+      ],
+      'consistent-return': 'error',
     },
   },
+
+  prettier,
 ]);

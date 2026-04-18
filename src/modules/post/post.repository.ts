@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 
 import { CreatePostDto } from './schemas/create-post.schema';
-import { Post, Prisma } from 'src/generated/prisma/client';
+import { Prisma } from 'src/generated/prisma/client';
 import { PostQueryFilter } from './schemas/query-filter.schema';
 import {
   buildOffsetMeta,
@@ -66,7 +66,7 @@ export class PostRepository {
     });
   }
 
-  async update(id: string, data: any) {
+  async update(id: string, data: Prisma.PostUpdateInput) {
     const postExistCheck = await this.prisma.client.post.findUnique({
       where: { id },
     });

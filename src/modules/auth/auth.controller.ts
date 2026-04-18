@@ -10,6 +10,7 @@ import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/registerUser.dto';
 import { AuthGuard } from './auth.guard';
 import { LoginDto } from './dto/login.dto';
+import type { AuthenticatedRequest } from './auth.types';
 
 @Controller('auth') // This decorator sets the route prefix for the controller. When applied, the prefix becomes ‘auth’ for all controller routes, while the global default prefix remains ‘api’
 export class AuthController {
@@ -42,10 +43,9 @@ export class AuthController {
   }
   @Get('profile') // /auth/login
   @UseGuards(AuthGuard)
-  async profile(@Request() req) {
+  async profile(@Request() req: AuthenticatedRequest) {
     console.log(req.user);
-    const user = req.user as { userId: string };
-    const result = await this.authService.profile(user.userId);
+    const result = await this.authService.profile(req.user!.userId);
     return result;
   }
 }

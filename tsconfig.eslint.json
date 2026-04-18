@@ -1,11 +1,14 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["node", "jest"],
+    "noEmit": true
+  },
   "include": [
     "src/**/*.ts",
+    "test/**/*.ts",
     "prisma/**/*.ts",
-    "prisma.config.ts", // ✅ ADD THIS
-    "eslint.config.mjs",
-    "test/**/*.ts"
+    "prisma.config.ts"
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", "coverage", "src/generated/**"]
 }

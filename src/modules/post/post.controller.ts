@@ -23,13 +23,10 @@ import {
   type UpdatePostDto,
 } from './schemas/update-post.schema';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
-import { PostEntity } from './entities/post.entity';
 import { Roles } from '../auth/roles.decorator';
 import { Role } from '../user/user.types';
 import { AuthGuard } from '../auth/auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
-import { OffsetPaginationSchema } from 'src/common/pagination/pagination.schema';
-import { OffsetPagination } from 'src/common/pagination/pagination.types';
 import {
   PostQueryFilter,
   PostQueryFilterSchema,
@@ -62,7 +59,6 @@ export class PostController {
     query: PostQueryFilter,
   ) {
     const res = await this.postService.findAll(query);
-
     return res;
   }
 
@@ -90,7 +86,7 @@ export class PostController {
   @UseGuards(AuthGuard, RolesGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id', ParseUUIDPipe) id: string) {
-    const res = await this.postService.remove(id);
+    await this.postService.remove(id);
     return null;
   }
 }
