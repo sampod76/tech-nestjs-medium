@@ -13,33 +13,36 @@ import {
 export class PostRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(data: CreatePostDto) {
+  create(data: Prisma.PostCreateInput) {
+    // return this.prisma.client.post.create({
+    //   data: {
+    //     title: data.title,
+    //     author: data.author,
+    //     category: data.category,
+    //     content: data.content,
+    //   },
+    // }); // ❌ repository-তে dto দিও না ✅ service-এ map করে repository-তে পাঠাও
     return this.prisma.client.post.create({
-      data: {
-        title: data.title,
-        author: data.author,
-        category: data.category,
-        content: data.content,
-      },
+      data,
     });
   }
 
-  async findAll(query: PostQueryFilter) {
-    // 1️⃣ pagination build (safe + whitelist)
-    const paginationData = {
-      page: query.page,
-      limit: query.limit,
-      sortBy: query.sortBy,
-      sortOrder: query.sortOrder,
-    };
-    const pagination = buildOffsetPagination(paginationData, ['createdAt']);
-
-    // 2️⃣ where clause (filters)
-    const where: Prisma.PostWhereInput = {};
-
-    // 3️⃣ transactional query
+  async findAll(
+    where: Prisma.PostWhereInput,
+    pagination: {
+      skip: number;
+      limit: number;
+      sortBy: string;
+      sortOrder: 'asc' | 'desc';
+    },
+  ) {
     const [total, data] = await this.prisma.client.$transaction([
-      this.prisma.client.post.count({ where }),
+      this.prisma.client.post.count({
+        where: {
+          ...where,
+          deletedAt: null,
+        },
+      }),
       this.prisma.client.post.findMany({
         where,
         skip: pagination.skip,
@@ -50,30 +53,16 @@ export class PostRepository {
       }),
     ]);
 
-    // 4️⃣ meta build
-    const meta = buildOffsetMeta(total, pagination.page, pagination.limit);
-
-    // 5️⃣ standard response
-    return {
-      meta,
-      items: data,
-    };
+    return { total, data };
   }
 
-  findOne(id: string) {
+  findUnique(id: string) {
     return this.prisma.client.post.findUnique({
       where: { id },
     });
   }
 
   async update(id: string, data: Prisma.PostUpdateInput) {
-    const postExistCheck = await this.prisma.client.post.findUnique({
-      where: { id },
-    });
-
-    if (!postExistCheck) {
-      throw new NotFoundException('Post not found');
-    }
     return this.prisma.client.post.update({
       where: { id },
       data,
@@ -81,13 +70,6 @@ export class PostRepository {
   }
 
   async remove(id: string) {
-    const postExistCheck = await this.prisma.client.post.findUnique({
-      where: { id },
-    });
-
-    if (!postExistCheck) {
-      throw new NotFoundException('Post not found');
-    }
     return this.prisma.client.post.update({
       where: { id },
       data: { deletedAt: new Date() },

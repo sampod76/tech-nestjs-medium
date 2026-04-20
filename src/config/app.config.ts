@@ -5,9 +5,9 @@ export const appConfig = () => {
   const parsed = EnvSchema.safeParse(process.env);
 
   if (!parsed.success) {
-    console.error('❌ ENV ERROR');
+    console.error('❌ ENV VALIDATION FAILED');
 
-    parsed?.error?.issues?.forEach((e) => {
+    parsed.error.issues.forEach((e) => {
       console.error(`- ${e.path.join('.')}: ${e.message}`);
     });
 
@@ -16,26 +16,32 @@ export const appConfig = () => {
 
   const env = parsed.data;
 
-  return {
+  return Object.freeze({
+    //Object.freeze যাতে কেউ runtime এ modify করতে না পারেs
     app: {
       env: env.NODE_ENV,
-      port: env.PORT,
+      isProduction: env.NODE_ENV === 'production',
+      isDevelopment: env.NODE_ENV === 'development',
+
+      port: Number(env.PORT),
+
       database: {
         host: env.DATABASE_HOST,
-        port: env.DATABASE_PORT,
+        port: Number(env.DATABASE_PORT),
         name: env.DATABASE_NAME,
         user: env.DATABASE_USER,
         password: env.DATABASE_PASSWORD,
         mongodbUrl: env.MONGODB_URL,
         postgresUrl: env.DATABASE_URL,
       },
+
       jwt: {
         access_secret: env.JWT_SECRET,
         refresh_secret: env.JWT_REFRESH_SECRET,
         expiresIn: env.JWT_EXPIRES_IN,
       },
     },
-  };
+  } as const);
 };
 
 export type AppConfig = ReturnType<typeof appConfig>;

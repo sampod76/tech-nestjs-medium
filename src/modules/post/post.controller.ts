@@ -54,6 +54,7 @@ export class PostController {
   @Roles(Role.admin, Role.teacher, Role.student)
   @UseGuards(AuthGuard, RolesGuard)
   @UseInterceptors(LoggingInterceptor)
+  @HttpCode(HttpStatus.OK)
   async findAll(
     @Query(new ZodValidationPipe(PostQueryFilterSchema))
     query: PostQueryFilter,
@@ -65,6 +66,7 @@ export class PostController {
   @Get(':id')
   @Roles(Role.admin, Role.teacher, Role.student)
   @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const res = await this.postService.findOne(id);
     return res;
@@ -73,6 +75,7 @@ export class PostController {
   @Patch(':id')
   @Roles(Role.admin, Role.teacher, Role.student)
   @UseGuards(AuthGuard, RolesGuard)
+  @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(new ZodValidationPipe(UpdatePostSchema)) updatePostDto: UpdatePostDto,

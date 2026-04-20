@@ -8,6 +8,12 @@ export const softDeleteExtension = Prisma.defineExtension({
   query: {
     $allModels: {
       async findMany({ args, query }) {
+        if ((args as any).withDeleted) {
+          // when need to get deleted data
+          delete (args as any).withDeleted;
+          return query(args); // 🚀 skip filter
+        }
+
         args.where = {
           ...(args.where ?? {}),
           deletedAt: null,
@@ -24,15 +30,15 @@ export const softDeleteExtension = Prisma.defineExtension({
 
         return query(args);
       },
+      // এটা ❌ risky Prisma findUnique strict
+      // async findUnique({ args, query }) {
+      //   args.where = {
+      //     ...(args.where ?? {}),
+      //     deletedAt: null,
+      //   };
 
-      async findUnique({ args, query }) {
-        args.where = {
-          ...(args.where ?? {}),
-          deletedAt: null,
-        };
-
-        return query(args);
-      },
+      //   return query(args);
+      // },
 
       async count({ args, query }) {
         args.where = {
