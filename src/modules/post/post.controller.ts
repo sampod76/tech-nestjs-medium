@@ -23,15 +23,18 @@ import {
   type UpdatePostDto,
 } from './schemas/update-post.schema';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
-import { Roles } from '../auth/roles.decorator';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { Role } from '../user/user.types';
 import { AuthGuard } from '../auth/auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
+import { RolesGuard } from '../auth/guards/roles.guard';
 import {
   PostQueryFilter,
   PostQueryFilterSchema,
 } from './schemas/query-filter.schema';
 import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
+import { CurrentUser } from '../auth/decorators/currentUser.decorator';
+import { AuthPayload } from '../auth/auth.types';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('posts')
 export class PostController {
@@ -39,11 +42,12 @@ export class PostController {
 
   @Post()
   @Roles(Role.admin)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @UseInterceptors(LoggingInterceptor)
   @HttpCode(HttpStatus.CREATED)
   async create(
     @Body(new ZodValidationPipe(CreatePostSchema)) createPostDto: CreatePostDto,
+    @CurrentUser() user: AuthPayload,
   ) {
     const res = await this.postService.create(createPostDto);
 
@@ -52,33 +56,39 @@ export class PostController {
 
   @Get()
   @Roles(Role.admin, Role.teacher, Role.student)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @UseInterceptors(LoggingInterceptor)
   @HttpCode(HttpStatus.OK)
   async findAll(
     @Query(new ZodValidationPipe(PostQueryFilterSchema))
     query: PostQueryFilter,
+    @CurrentUser() user: AuthPayload, //or @Req() req: Request
   ) {
+    console.log('🚀 ~ PostController ~ findAll ~ user:', user);
     const res = await this.postService.findAll(query);
     return res;
   }
 
   @Get(':id')
   @Roles(Role.admin, Role.teacher, Role.student)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: AuthPayload,
+  ) {
     const res = await this.postService.findOne(id);
     return res;
   }
 
   @Patch(':id')
   @Roles(Role.admin, Role.teacher, Role.student)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(HttpStatus.OK)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body(new ZodValidationPipe(UpdatePostSchema)) updatePostDto: UpdatePostDto,
+    @CurrentUser() user: AuthPayload,
   ) {
     const res = await this.postService.update(id, updatePostDto);
     return res;
@@ -86,9 +96,12 @@ export class PostController {
 
   @Delete(':id')
   @Roles(Role.admin, Role.teacher, Role.student)
-  @UseGuards(AuthGuard, RolesGuard)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
-  async remove(@Param('id', ParseUUIDPipe) id: string) {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @CurrentUser() user: AuthPayload,
+  ) {
     await this.postService.remove(id);
     return null;
   }

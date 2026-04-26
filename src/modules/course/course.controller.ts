@@ -17,9 +17,9 @@ import {
   type CreateCourseDto,
 } from './schemas/create-course.schema';
 import { AuthGuard } from 'src/modules/auth/auth.guard';
-import { Roles } from 'src/modules/auth/roles.decorator';
+import { Roles } from 'src/modules/auth/decorators/roles.decorator';
 import { Role } from 'src/modules/user/user.types';
-import { RolesGuard } from 'src/modules/auth/roles.guard';
+import { RolesGuard } from 'src/modules/auth/guards/roles.guard';
 import { LoggingInterceptor } from 'src/common/interceptors/logging.interceptor';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { ApiListData } from 'src/common/http/http-response';

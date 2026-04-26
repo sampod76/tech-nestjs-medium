@@ -1,8 +1,13 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Role } from 'src/modules/user/user.types';
-import { ROLES_KEY } from './roles.decorator';
-import type { AuthenticatedRequest } from './auth.types';
+import { ROLES_KEY } from '../decorators/roles.decorator';
+import type { AuthenticatedRequest } from '../auth.types';
 //$ read then learn how to work Full document and example
 //$ https://www.notion.so/sampod/guard-ts-2bf7a1bce8f5803db2e4d6ee21cf17bf?source=copy_link
 
@@ -32,6 +37,13 @@ export class RolesGuard implements CanActivate {
 
     // user.role কি requiredRoles এর মধ্যে আছে কিনা চেক
     // থাকলে true (allow), না থাকলে false (403)
-    return !!user && requiredRoles.includes(user.role);
+    // return !!user && requiredRoles.includes(user.role);
+    if (!user) {
+      throw new ForbiddenException('User not found');
+    }
+    if (!requiredRoles.includes(user.role)) {
+      throw new ForbiddenException('Access Denied');
+    }
+    return true;
   }
 }

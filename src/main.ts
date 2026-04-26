@@ -5,9 +5,11 @@ import { GlobalExceptionFilter } from './common/filters/http-exception.filter';
 import { PrismaExceptionFilter } from './common/filters/prisma-exception.filter';
 import { requestIdMiddleware } from './common/middlewares/request-id.middleware';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
-
+import cookieParser from 'cookie-parser';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    bodyParser: true,
+  });
   // app.useGlobalPipes(
   //   new ValidationPipe({
   //     whitelist: true, //extra field remove
@@ -17,7 +19,9 @@ async function bootstrap() {
   //     skipNullProperties: true,
   //   }),
   // );
-  // 
+  //
+
+  app.use(cookieParser());
   app.use(requestIdMiddleware);
   app.setGlobalPrefix('api/v1');
   app.useGlobalFilters(
