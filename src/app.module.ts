@@ -1,21 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
-import { UserModule } from './modules/user/user.module';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 
 // import { jwtConstants } from './auth/constants';
-import { CourseModule } from './modules/course/course.module';
 import { AppConfig, appConfig } from './config/app.config';
-import { PostModule } from './modules/post/post.module';
 
-import { CategoryModule } from './modules/category/category.module';
 import { PrismaModule } from './database/prisma.module';
-import { AuditlogModule } from './modules/auditlog/auditlog.module';
+
 import { AuditLogModule } from './modules/audit-log/audit-log.module';
+
+import { FilesModule } from './modules/files/files.module';
 
 @Module({
   imports: [
@@ -38,13 +35,9 @@ import { AuditLogModule } from './modules/audit-log/audit-log.module';
     ),
 
     PrismaModule,
-    AuthModule,
-    UserModule,
-    CourseModule,
-    PostModule,
-    CategoryModule,
-    AuditlogModule,
+
     AuditLogModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

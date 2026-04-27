@@ -1,13 +1,123 @@
-model User {
-    id        String   @id @default(uuid())
-    firstName String
-    lastName  String
-    email     String   @unique
-    password  String
-    roll      String   @default("student")
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+enum TokenType {
+  login
+  reset_password
+  account_create
 
-    @@schema("auth")
-    @@map("users")
+  @@schema("auth")
+}
+
+model UserToken {
+  id         String     @id @default(cuid())
+  otp        Int
+  jwtToken   String?
+  timeOut    DateTime
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  is_deleted Boolean    @default(false)
+  user_id    String?
+  resetToken String?
+  TempUser   TempUser[] @relation("TokenToTempUsers")
+  user       User?      @relation("userToken", fields: [user_id], references: [id])
+  token_type TokenType? //"reset_password","login","account_create"
+
+  @@index([is_deleted])
+  @@map("user_tokens")
+  @@schema("auth")
+}
+
+model TempUser {
+  id         String    @id @default(cuid())
+  email      String    @db.VarChar(255)
+  user_type  UserRole
+  token_id   String
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  is_deleted Boolean   @default(false)
+  token      UserToken @relation("TokenToTempUsers", fields: [token_id], references: [id], onDelete: Cascade)
+
+  @@map("temp_users")
+  @@schema("auth")
+}
+
+model User {
+  id           String  @id @default(cuid())
+  userUniqueId String? @unique @db.VarChar(255)
+
+  email               String              @db.VarChar(255)
+  password            String? // social login without password
+  role                UserRole?           @default(guest)
+  username            String              @unique @db.VarChar(255)
+  is_deleted          Boolean             @default(false)
+  //
+  is_email_verified   Boolean             @default(false)
+  is_online           Boolean             @default(false)
+  is_change_password  Boolean             @default(false)
+  is_main_account     Boolean             @default(true)
+  //
+  verification_status VerificationStatus? @default(pending)
+  status              RecordStatus?             @default(active)
+  account_type        AccountType?        @default(custom) // provider
+  providerId          String? // google id or facebook id
+  //
+  secret_key          String?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
+  last_login          DateTime?           @db.Timestamp(6)
+  //
+  author_id           String?
+  author              User?               @relation("UserCreatedBy", fields: [author_id], references: [id])
+  //
+  admin               Admin?
+
+
+  authorUsers        User[]           @relation("UserCreatedBy")
+  //
+  userToken          UserToken[]      @relation("userToken")
+
+
+
+
+  @@unique([user_type, email], name: "USER_TYPE_email_unique")
+  @@index([username, is_deleted])
+  @@map("users")
+  @@schema("auth")
+}
+
+enum UserRole {
+  superAdmin
+  admin
+  b2c
+  b2b
+  guest
+
+  @@schema("auth")
+}
+
+enum VerificationStatus {
+  pending
+  approved
+  rejected
+
+  @@schema("auth")
+}
+
+enum AccountType {
+  custom
+  google
+  apple
+  facebook
+  twitter
+  github
+  linkedin
+  instagram
+
+  @@schema("auth")
+}
+
+enum AssignBy {
+  admin
+  b2b
+  b2c
+
+  @@schema("auth")
 }

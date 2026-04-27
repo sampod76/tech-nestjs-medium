@@ -13,5 +13,14 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  schemas  = ["auth", "posts"]
+  schemas  = ["auth","user","media","common"]
+}
+
+enum RecordStatus {
+  active
+  inactive
+  blocked
+  archived
+
+  @@schema("common")
 }

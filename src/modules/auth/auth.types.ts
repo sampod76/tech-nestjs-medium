@@ -1,5 +1,5 @@
-import type { Request } from 'express';
-import type { Role } from 'src/modules/user/user.types';
+import type { Request } from "express";
+import { Role } from "src/modules/user/user.types";
 
 export type AuthPayload = {
   userId: string;

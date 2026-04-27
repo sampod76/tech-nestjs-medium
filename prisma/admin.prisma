@@ -1,0 +1,30 @@
+model Admin {
+  id          String     @id @default(cuid())
+
+  user_id     String     @unique
+  user        User       @relation(fields: [user_id], references: [id])
+
+  first_name  String
+  last_name   String
+  gender      UserGender @default(male)
+  phone       String?    @db.VarChar(255)
+  address     String?    @db.VarChar(255)
+  dob         String?
+
+  image_id    String?    @unique
+  image       File?      @relation("admin_profile_image", fields: [image_id], references: [id])
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  is_deleted  Boolean    @default(false)
+
+  @@map("admin")
+  @@schema("auth")
+}
+enum UserGender {
+  male
+  female
+  other
+
+  @@schema("auth")
+}

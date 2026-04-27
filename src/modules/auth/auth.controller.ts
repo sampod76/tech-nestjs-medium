@@ -6,7 +6,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './services/auth.service';
+import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/registerUser.dto';
 import { AuthGuard } from './auth.guard';
 import { LoginDto } from './dto/login.dto';

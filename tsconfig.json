@@ -31,6 +31,9 @@
        Project Structure
     =============================== */
     "baseUrl": "./",
+    "paths": {
+      "src/*": ["src/*"]
+    },
     "incremental": true,
     "skipLibCheck": true,
     "ignoreDeprecations": "6.0",

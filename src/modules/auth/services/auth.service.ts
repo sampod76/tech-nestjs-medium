@@ -1,17 +1,16 @@
 import {
   ConflictException,
-  ForbiddenException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
-} from '@nestjs/common';
-import { UserService } from 'src/modules/user/user.service';
-import { RegisterDto } from '../dto/registerUser.dto';
-import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from '../dto/login.dto';
-import { ConfigService } from '@nestjs/config';
-import bcrypt from 'bcryptjs';
-import { AppConfig } from 'src/config/app.config';
+} from "@nestjs/common";
+import { UserService } from "src/modules/user/user.service";
+import { RegisterDto } from "../dto/registerUser.dto";
+import { JwtService } from "@nestjs/jwt";
+import { LoginDto } from "../dto/login.dto";
+import { ConfigService } from "@nestjs/config";
+import bcrypt from "bcryptjs";
+import { AppConfig } from "src/config/app.config";
 @Injectable()
 export class AuthService {
   constructor(
@@ -24,7 +23,7 @@ export class AuthService {
       registerUserDto.email,
     );
     if (existingUser) {
-      throw new ConflictException('User already exists');
+      throw new ConflictException("User already exists");
     }
     const hashedPassword = await this.hashPassword(registerUserDto.password);
     registerUserDto.password = hashedPassword;
@@ -36,7 +35,7 @@ export class AuthService {
   async login(loginDto: LoginDto) {
     const result = await this.userService.findByEmail(loginDto.email);
     if (!result) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException("User not found");
     }
 
     const isPasswordValid = await this.comparePassword(
@@ -44,7 +43,7 @@ export class AuthService {
       result.password,
     );
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid password');
+      throw new UnauthorizedException("Invalid password");
     }
     // const tokenTest = this.config.get<string>('PROJECT_NAME');
     // console.log('🚀 ~ AuthService ~ login ~ tokenTest:', tokenTest);
@@ -71,17 +70,17 @@ export class AuthService {
     userId: string;
     role: string;
   }) {
-    const envApp = this.configService.getOrThrow('app', { infer: true });
+    const envApp = this.configService.getOrThrow("app", { infer: true });
     const payload = { userId, role };
     const token = await this.jwtService.signAsync(payload, {
       secret: envApp.jwt.access_secret,
-      expiresIn: (envApp.jwt.expiresIn as any) || '1d',
+      expiresIn: (envApp.jwt.expiresIn as any) || "1d",
     });
     return token;
   }
   users(): { message: string } {
     return {
-      message: 'users',
+      message: "users",
     };
   }
 }
