@@ -14,6 +14,8 @@ import { PostModule } from './modules/post/post.module';
 
 import { CategoryModule } from './modules/category/category.module';
 import { PrismaModule } from './database/prisma.module';
+import { AuditlogModule } from './modules/auditlog/auditlog.module';
+import { AuditLogModule } from './modules/audit-log/audit-log.module';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { PrismaModule } from './database/prisma.module';
     CourseModule,
     PostModule,
     CategoryModule,
+    AuditlogModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

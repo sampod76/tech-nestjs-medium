@@ -6,9 +6,9 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UserService } from 'src/modules/user/user.service';
-import { RegisterDto } from './dto/registerUser.dto';
+import { RegisterDto } from '../dto/registerUser.dto';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from './dto/login.dto';
+import { LoginDto } from '../dto/login.dto';
 import { ConfigService } from '@nestjs/config';
 import bcrypt from 'bcryptjs';
 import { AppConfig } from 'src/config/app.config';
