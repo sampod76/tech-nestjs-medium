@@ -55,7 +55,7 @@ model User {
   is_main_account     Boolean             @default(true)
   //
   verification_status VerificationStatus? @default(pending)
-  status              RecordStatus?             @default(active)
+  status              RecordStatus?       @default(active)
   account_type        AccountType?        @default(custom) // provider
   providerId          String? // google id or facebook id
   //
@@ -69,16 +69,10 @@ model User {
   //
   admin               Admin?
 
-
-  authorUsers        User[]           @relation("UserCreatedBy")
+  authorUsers User[]      @relation("UserCreatedBy")
   //
-  userToken          UserToken[]      @relation("userToken")
+  userToken   UserToken[] @relation("userToken")
 
-
-
-
-  @@unique([user_type, email], name: "USER_TYPE_email_unique")
-  @@index([username, is_deleted])
   @@map("users")
   @@schema("auth")
 }
